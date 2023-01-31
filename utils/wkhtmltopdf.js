@@ -33,16 +33,19 @@ module.exports = function (event, options = []) {
                 while (fs.existsSync(`/tmp/${htmlFileName}`))
                     htmlFileName = getUniqueFileName(fileNamePrefix, ".html");
                 fs.writeFileSync(`/tmp/${htmlFileName}`, specifiedParameters[paramName]);
-                command += `${paramName} /tmp/${htmlFileName}`;
+                command += ` ${paramName} /tmp/${htmlFileName}`;
                 filesToDelete.push(`/tmp/${htmlFileName}`);
             } else {
-                command += paramName;
+                command += " " + paramName;
                 // Did they provide a value with the parameter?
                 if (specifiedParameters[paramName] !== null)
                     command += " " + specifiedParameters[paramName];
             }
         });
         command += " - - | cat";
+
+        console.log("WKHTMLTOPDF command:");
+        console.log(command);
 
         const proc = spawn("/bin/sh", ["-o", "pipefail", "-c", command]);
 
